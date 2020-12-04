@@ -24,10 +24,10 @@
         <tr v-for="task in tasks" :key="task.id">
           <td>{{ task.id }}</td>
           <td>{{ task.description }}</td>
-          <td>{{ task.datetime.toLocaleDateString('pt-BR') }}</td>
+          <td>{{ taskDateTime(task) }}</td>
           <td class="center">{{ task.minutes_duration }}</td>
           <td class="center">{{ task.remember_minutes_before }}</td>
-          <td class="center">{{ task.updated_at ? task.updated_at.toLocaleDateString('pt-BR') : task.created_at.toLocaleDateString('pt-BR') }}</td>
+          <td class="center">{{ taskDateChange(task) }}</td>
         </tr>
       </thead>
     </table>
@@ -36,6 +36,7 @@
 
 <script>
 import Header from './components/Header.vue';
+import moment from 'moment';
 
 const tasks = [{
   id: 0,
@@ -86,6 +87,14 @@ export default {
         remember_minutes_before: 5,
         created_at: new Date()
       });
+    },
+    taskDateChange: function(task) {
+      const dateTime = task.updated_at ?? task.created_at;
+      const dataTask = this.taskDateTime(dateTime);
+      return dataTask;
+    },
+    taskDateTime: function(date) {
+      return moment(date).format('DD/MM/yyyy HH:mm');
     },
   },
   components: {
