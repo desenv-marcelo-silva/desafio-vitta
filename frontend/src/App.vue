@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-        <h1>Welcome to Vitta Stone</h1>
-    <h3>Task list</h3>
+    <Header />
     <form
     @submit="saveTask">
       <label 
@@ -19,6 +18,8 @@
 </template>
 
 <script>
+import Header from './components/Header.vue';
+
 const tasks = [{
   id: 0,
   description: 'Do a pull-request',
@@ -69,6 +70,9 @@ export default {
         created_at: new Date()
       });
     },
+  },
+  components: {
+    Header
   }
 }
 </script>
