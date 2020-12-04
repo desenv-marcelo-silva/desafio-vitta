@@ -26,6 +26,7 @@
           <input 
             id="task_duration"
             type="number"
+            step="5"
             v-model="taskDuration" />
         </div>
        
@@ -34,6 +35,7 @@
         <input 
             id="task_remember"
             type="number"
+            step="5"
             v-model="taskRemember" />
         </div>
      </div>
@@ -50,6 +52,7 @@
           <th>Duração</th>
           <th>Lembrete</th>
           <th>Última alteração</th>
+          <th>&nbsp;</th>
         </tr>
         <tr v-for="task in tasks" :key="task.id">
           <td>{{ task.id }}</td>
@@ -58,6 +61,12 @@
           <td class="center">{{ task.minutes_duration }}</td>
           <td class="center">{{ task.remember_minutes_before }}</td>
           <td class="center">{{ taskDateChange(task) }}</td>
+          <td class="center">
+            <div class="action">
+              <button class="btn_edit">Editar</button>
+              <button class="btn_delete">Apagar</button>
+            </div>
+          </td>
         </tr>
       </thead>
     </table>
@@ -69,7 +78,7 @@ import Header from './components/Header.vue';
 import moment from 'moment';
 
 const tasks = [{
-  id: 0,
+  id: 1,
   description: 'Do a pull-request',
   datetime: new Date(),
   minutes_duration: 15,
@@ -78,7 +87,7 @@ const tasks = [{
   updated_at: new Date(),
   removed_at: new Date(),
 },{
-  id: 1,
+  id: 2,
   description: 'Go out',
   datetime: new Date(),
   minutes_duration: 10,
@@ -115,9 +124,9 @@ export default {
       this.tasks.push({
         id: newId,
         description: this.taskDescription,
-        datetime: new Date(),
-        minutes_duration: 5,
-        remember_minutes_before: 5,
+        datetime: this.taskDateAndTime,
+        minutes_duration: this.taskDuration,
+        remember_minutes_before: this.taskRemember,
         created_at: new Date()
       });
     },
@@ -172,6 +181,25 @@ div.task_info div {
 div.task_info input[type='datetime-local'] {
   height: 3.4rem;
   margin-right: 1rem;
+}
+
+div.action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button {
+  width: 8rem;
+}
+
+button.btn_edit {
+  background-color: #00acFF;
+  margin-right: 0.25rem;
+}
+
+button.btn_delete {
+  background-color: #ff0000;
 }
 
 .center {
