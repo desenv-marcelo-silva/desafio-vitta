@@ -52,9 +52,9 @@
             v-model="taskRemember" />
         </div>
      </div>
-     <div>
-       <button type="submit">Gravar</button>
-     </div>
+      <div>
+        <button type="submit">Salvar</button>
+      </div>
     </form>
 
     <hr />
@@ -95,9 +95,9 @@
           <td>{{ task.id }}</td>
           <td>{{ task.description }}</td>
           <td>{{ taskDateTime(task.task_date) }}</td>
-          <td>{{ task.task_time }}</td>
-          <td class="center">{{ task.minutes_duration }}</td>
-          <td class="center">{{ task.remember_minutes_before }}</td>
+          <td>{{ `${task.task_time}h` }}</td>
+          <td class="center">{{ `${Number(task.minutes_duration)} min` }}</td>
+          <td class="center">{{ `${task.remember_minutes_before} min`  }}</td>
           <td class="center">{{ taskDateChange(task) }}</td>
           <td class="center">
             <div class="action">
@@ -153,7 +153,9 @@ export default {
       if (this.taskId > 0) {
         _task.id = this.taskId;
         _task.updated_at = new Date();
-        await axios.patch(`${URL_SERVER}/${this.taskId}`, _task);
+        const UpdatedTask = await axios.patch(`${URL_SERVER}/${this.taskId}`, _task);
+        const tempTask = this.tasks.find(task => task.id === this.taskId);
+        Object.assign(tempTask, UpdatedTask.data);
       } else {
         _task.created_at = new Date();
         const newTask = await axios.post(URL_SERVER, _task);
@@ -177,10 +179,10 @@ export default {
       this.taskTime = 0;
       this.taskDuration = 0;
       this.taskId = 0;
-  },
+    },
     taskDateChange: function(task) {
       const dateTime = task.updated_at ?? task.created_at;
-      const dataTask = this.taskDateTime(dateTime);
+      const dataTask = moment(dateTime).format('DD/MM/yyyy HH:mm');
       return dataTask;
     },
     taskDateTime: function(date) {
