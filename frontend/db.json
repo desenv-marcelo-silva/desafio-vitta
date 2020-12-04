@@ -1,37 +1,24 @@
-{ 
+{
   "tasks": [
     {
-    "id": 1,
-    "description": "Do a pull-request",
-    "task_date": "Fri Dec 04 2020 16:56:06 GMT-0300",
-    "task_time": "Fri Dec 04 2020 16:56:06 GMT-0300",
-    "minutes_duration": 15,
-    "remember_minutes_before": 5,
-    "created_at": "Fri Dec 04 2020 16:56:06 GMT-0300",
-    "updated_at": "Fri Dec 04 2020 16:56:06 GMT-0300",
-    "removed_at": "Fri Dec 04 2020 16:56:06 GMT-0300"
+      "id": 1,
+      "description": "Do a pull-request",
+      "task_date": "2020-12-15",
+      "task_time": "17:50",
+      "minutes_duration": 15,
+      "remember_minutes_before": 5,
+      "created_at": "Fri Dec 04 2020 16:56:06 GMT-0300",
+      "updated_at": "Fri Dec 04 2020 16:56:06 GMT-0300",
+      "removed_at": "Fri Dec 04 2020 16:56:06 GMT-0300"
     },
     {
-    "id": 2,
-    "description": "To go out",
-    "task_date": "Fri Dec 04 2020 16:56:06 GMT-0300",
-    "task_time": "Fri Dec 04 2020 16:56:06 GMT-0300",
-    "minutes_duration": 10,
-    "remember_minutes_before": 5,
-    "created_at": "Fri Dec 04 2020 16:56:06 GMT-0300",
-    "updated_at": "Fri Dec 04 2020 16:56:06 GMT-0300",
-    "removed_at": "Fri Dec 04 2020 16:56:06 GMT-0300"
-    },
-    {
-  "id": 3,
-  "description": "Planning a day",
-  "task_date": "Fri Dec 04 2020 16:56:06 GMT-0300",
-  "task_time": "Fri Dec 04 2020 16:56:06 GMT-0300",
-  "minutes_duration": 5,
-  "remember_minutes_before": 5,
-  "created_at": "Fri Dec 04 2020 16:56:06 GMT-0300",
-  "updated_at": "Fri Dec 04 2020 16:56:06 GMT-0300",
-  "removed_at": "Fri Dec 04 2020 16:56:06 GMT-0300"
+      "description": "Programming",
+      "task_date": "2020-12-15",
+      "task_time": "17:50",
+      "minutes_duration": "40",
+      "remember_minutes_before": "5",
+      "created_at": "2020-12-04T20:47:12.996Z",
+      "id": 2
     }
   ]
 }
