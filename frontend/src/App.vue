@@ -2,14 +2,44 @@
   <div id="app">
     <Header />
     <form
-    @submit="saveTask">
-      <label 
-        for="task_description">Tarefa</label>
-      <input 
-        id="task_description" 
-        type="text" 
-        v-model="taskDescription" />
-        <button type="submit">Gravar</button>
+      @submit="saveTask">
+      <div class="task_name">
+        <label 
+          for="task_description">Tarefa</label>
+        <input 
+          id="task_description" 
+          type="text" 
+          v-model="taskDescription" />
+      </div>
+      
+      <div class="task_info">
+        <div>
+        <label for="date_time">Data e hora</label>
+        <input 
+          id="date_time"
+          type="datetime-local"
+          v-model="taskDateAndTime" />
+        </div>
+
+        <div>
+        <label for="task_duration">Duração</label>
+          <input 
+            id="task_duration"
+            type="number"
+            v-model="taskDuration" />
+        </div>
+       
+        <div>
+        <label for="task_remember">Lembrar</label>
+        <input 
+            id="task_remember"
+            type="number"
+            v-model="taskRemember" />
+        </div>
+     </div>
+     <div>
+       <button type="submit">Gravar</button>
+     </div>
     </form>
     <table>
       <thead>
@@ -72,7 +102,10 @@ export default {
   data() {
     return {
       tasks,
-      taskDescription: ""
+      taskDescription: "",
+      taskDateAndTime: "",
+      taskDuration: 0,
+      taskRemember: 0,
     }
   },
   methods: {
@@ -104,6 +137,43 @@ export default {
 </script>
 
 <style>
+
+body {
+  max-width: 70rem !important;
+  margin: 0 auto;
+}
+
+#app {
+  width: max-content;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form div {
+  width: 100%;
+}
+
+div.task_name > input {
+  width: 100%;
+}
+
+div.task_info {
+  display: flex;
+  justify-content: space-between;
+}
+
+div.task_info div {
+  margin-right: 0.5rem;
+}
+
+div.task_info input[type='datetime-local'] {
+  height: 3.4rem;
+  margin-right: 1rem;
+}
+
 .center {
   text-align: center;
 }
