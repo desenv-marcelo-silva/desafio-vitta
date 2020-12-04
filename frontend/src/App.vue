@@ -11,9 +11,26 @@
         v-model="taskDescription" />
         <button type="submit">Gravar</button>
     </form>
-    <ul>
-      <li v-for="task in tasks" :key="task.id">{{ task.description }}</li>
-    </ul>
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Tarefa</th>
+          <th>Data/Hora</th>
+          <th>Duração</th>
+          <th>Lembrete</th>
+          <th>Última alteração</th>
+        </tr>
+        <tr v-for="task in tasks" :key="task.id">
+          <td>{{ task.id }}</td>
+          <td>{{ task.description }}</td>
+          <td>{{ task.datetime.toLocaleDateString('pt-BR') }}</td>
+          <td class="center">{{ task.minutes_duration }}</td>
+          <td class="center">{{ task.remember_minutes_before }}</td>
+          <td class="center">{{ task.updated_at ? task.updated_at.toLocaleDateString('pt-BR') : task.created_at.toLocaleDateString('pt-BR') }}</td>
+        </tr>
+      </thead>
+    </table>
   </div>
 </template>
 
@@ -27,7 +44,7 @@ const tasks = [{
   minutes_duration: 15,
   remember_minutes_before: 5,
   created_at: new Date(),
-  modified_at: new Date(),
+  updated_at: new Date(),
   removed_at: new Date(),
 },{
   id: 1,
@@ -36,7 +53,7 @@ const tasks = [{
   minutes_duration: 10,
   remember_minutes_before: 5,
   created_at: new Date(),
-  modified_at: new Date(),
+  updated_at: new Date(),
   removed_at: new Date(),
 },{
   id: 3,
@@ -45,7 +62,7 @@ const tasks = [{
   minutes_duration: 5,
   remember_minutes_before: 5,
   created_at: new Date(),
-  modified_at: new Date(),
+  updated_at: new Date(),
   removed_at: new Date(),
 }];
 
@@ -78,6 +95,7 @@ export default {
 </script>
 
 <style>
-#app {
+.center {
+  text-align: center;
 }
 </style>
