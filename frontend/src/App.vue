@@ -59,13 +59,24 @@
 
     <hr />
     <div class="render_filter">
-      <h4>Filtrar tarefas por frequência</h4>
+      <div class="render_filter__freq">
+        <h4>Filtrar tarefas por frequência</h4>
 
-      <select v-model="renderFilter">
-        <option value="day">Dia</option>
-        <option value="week">Semana</option>
-        <option value="month">Mês</option>
-      </select>
+        <select v-model="renderFilter">
+          <option value="day">Dia</option>
+          <option value="week">Semana</option>
+          <option value="month">Mês</option>
+        </select>
+      </div>
+      <div class="render_filter__status">
+        <h4>Filtrar tarefas por status</h4>
+
+        <select v-model="renderFilterStatus">
+          <option value="done">Realizadas</option>
+          <option value="open">Não realizadas</option>
+          <option value="all">Todas</option>
+        </select>
+      </div>
     </div>
 
     <table>
@@ -125,7 +136,8 @@ export default {
       taskDuration: 0,
       taskRemember: 0,
       taskId: 0,
-      renderFilter: 'week'
+      renderFilter: 'week',
+      renderFilterStatus: 'all'
     }
   },
   methods: {
@@ -251,10 +263,11 @@ button.btn_delete {
   margin-top: 2rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .render_filter h4 {
-  margin: 0 2rem 0 0;
+  margin: 0 2rem 1rem 0;
 }
 
 .render_filter select {
