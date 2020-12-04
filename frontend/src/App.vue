@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <Header />
+
     <form
       @submit="save">
       <div class="task_name">
@@ -55,6 +56,18 @@
        <button type="submit">Gravar</button>
      </div>
     </form>
+
+    <hr />
+    <div class="render_filter">
+      <h4>Filtrar tarefas por frequência</h4>
+
+      <select v-model="renderFilter">
+        <option value="day">Dia</option>
+        <option value="week">Semana</option>
+        <option value="month">Mês</option>
+      </select>
+    </div>
+
     <table>
       <thead>
         <tr>
@@ -112,6 +125,7 @@ export default {
       taskDuration: 0,
       taskRemember: 0,
       taskId: 0,
+      renderFilter: 'week'
     }
   },
   methods: {
@@ -231,6 +245,21 @@ button.btn_edit {
 
 button.btn_delete {
   background-color: #ff0000;
+}
+
+.render_filter {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.render_filter h4 {
+  margin: 0 2rem 0 0;
+}
+
+.render_filter select {
+  margin: 0;
+  width: 20rem;
 }
 
 .center {
