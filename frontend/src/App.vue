@@ -79,52 +79,26 @@
       </div>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>Tarefa</th>
-          <th>Data</th>
-          <th>Hora</th>
-          <th>Duração</th>
-          <th>Lembrete</th>
-          <th>Última alteração</th>
-          <th>&nbsp;</th>
-        </tr>
-        <tr v-for="task in tasks" :key="task.id">
-          <td>{{ task.id }}</td>
-          <td>{{ task.description }}</td>
-          <td>{{ taskDateTime(task.task_date) }}</td>
-          <td>{{ `${task.task_time}h` }}</td>
-          <td class="center">{{ `${Number(task.minutes_duration)} min` }}</td>
-          <td class="center">{{ `${task.remember_minutes_before} min`  }}</td>
-          <td class="center">{{ taskDateChange(task) }}</td>
-          <td class="center">
-            <div class="action">
-              <button class="btn_edit" @click="edit(task)">Editar</button>
-              <button class="btn_delete" @click="delTask(task.id)">Apagar</button>
-            </div>
-          </td>
-        </tr>
-      </thead>
-    </table>
+    <TaskList 
+      :tasks="tasks" 
+      @deleteTask="deleteTask"
+      @editTask="editTask"
+      />
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import moment from 'moment';
-
 import Header from './components/Header.vue';
+import TaskList from './components/TaskList.vue';
 
-const URL_SERVER = 'http://localhost:4205/tasks';
+import api from './services/service.js'
 
 const tasks = [];
 
 export default {
   name: 'App',
   created: async function() {
-    const res = await axios.get(URL_SERVER);
+    const res = await api.get('tasks');
     this.tasks = res.data;
   },
   data() {
@@ -143,32 +117,26 @@ export default {
   methods: {
     save: async function(e) {
       e.preventDefault();
-      const _task = {
-        description: this.taskDescription,
-        task_date: this.taskDate,
-        task_time: this.taskTime,
-        minutes_duration: this.taskDuration,
-        remember_minutes_before: this.taskRemember,
-      }
+      const _task = this.formToTask();
       if (this.taskId > 0) {
         _task.id = this.taskId;
         _task.updated_at = new Date();
-        const UpdatedTask = await axios.patch(`${URL_SERVER}/${this.taskId}`, _task);
+        const UpdatedTask = await api.patch(`tasks/${this.taskId}`, _task);
         const tempTask = this.tasks.find(task => task.id === this.taskId);
         Object.assign(tempTask, UpdatedTask.data);
       } else {
         _task.created_at = new Date();
-        const newTask = await axios.post(URL_SERVER, _task);
+        const newTask = await api.post('tasks', _task);
         this.tasks.push(newTask.data);
       }
       this.clearFields();
     },
-    edit: function(task) {
-      this.toForm(task);
+    editTask: function(task) {
+      this.taskToForm(task);
     },
-    delTask: function(id) {
+    deleteTask: async function(id) {
       if (window.confirm('Confirma?')) {
-        axios.delete(`${URL_SERVER}/${id}`);
+        await api.delete(`tasks/${id}`);
         this.tasks = this.tasks.filter(task => task.id !== id);
       }
     },
@@ -180,25 +148,27 @@ export default {
       this.taskDuration = 0;
       this.taskId = 0;
     },
-    taskDateChange: function(task) {
-      const dateTime = task.updated_at ?? task.created_at;
-      const dataTask = moment(dateTime).format('DD/MM/yyyy HH:mm');
-      return dataTask;
-    },
-    taskDateTime: function(date) {
-      return moment(date).format('DD/MM/yyyy');
-    },
-    toForm: function(task) {
+    taskToForm: function(task) {
       this.taskRemember = task.remember_minutes_before;
       this.taskDescription = task.description;
       this.taskDate = task.task_date;
       this.taskTime = task.task_time;
       this.taskDuration = task.minutes_duration;
       this.taskId = task.id;
+    },
+    formToTask: function() {
+      return {
+        description: this.taskDescription,
+        task_date: this.taskDate,
+        task_time: this.taskTime,
+        minutes_duration: this.taskDuration,
+        remember_minutes_before: this.taskRemember,
+      }
     }
   },
   components: {
-    Header
+    Header,
+    TaskList
   }
 }
 </script>
