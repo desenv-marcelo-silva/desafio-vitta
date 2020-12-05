@@ -14,8 +14,8 @@
         <tr v-for="task in tasks" :key="task.id">
           <td>{{ task.id }}</td>
           <td>{{ task.description }}</td>
-          <td>{{ taskDateTime(task.task_date) }}</td>
-          <td>{{ `${task.task_time}h` }}</td>
+          <td>{{ taskDateTime(task.date) }}</td>
+          <td>{{ `${task.time}h` }}</td>
           <td class="center">{{ `${Number(task.minutes_duration)} min` }}</td>
           <td class="center">{{ `${task.remember_minutes_before} min`  }}</td>
           <td class="center">{{ taskDateChange(task) }}</td>

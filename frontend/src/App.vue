@@ -3,7 +3,7 @@
     <Header />
 
     <form
-      @submit="save">
+      @submit.prevent="save">
       <div class="task_name">
         <label 
           for="task_description">Tarefa</label>
@@ -115,19 +115,26 @@ export default {
     }
   },
   methods: {
-    save: async function(e) {
-      e.preventDefault();
+    save: async function() {
       const _task = this.formToTask();
       if (this.taskId > 0) {
         _task.id = this.taskId;
         _task.updated_at = new Date();
-        const UpdatedTask = await api.patch(`tasks/${this.taskId}`, _task);
-        const tempTask = this.tasks.find(task => task.id === this.taskId);
-        Object.assign(tempTask, UpdatedTask.data);
+        try {
+          const UpdatedTask = await api.put(`tasks/${this.taskId}`, _task);
+          const tempTask = this.tasks.find(task => task.id === this.taskId);
+          Object.assign(tempTask, UpdatedTask.data);
+        } catch (error) {
+          this.showError(error);     
+        }
       } else {
-        _task.created_at = new Date();
-        const newTask = await api.post('tasks', _task);
-        this.tasks.push(newTask.data);
+        try {
+          _task.created_at = new Date();
+          const newTask = await api.post('tasks', _task);
+          this.tasks.push(newTask.data);          
+        } catch (error) {
+          this.showError(error);
+        }
       }
       this.clearFields();
     },
@@ -136,8 +143,12 @@ export default {
     },
     deleteTask: async function(id) {
       if (window.confirm('Confirma?')) {
-        await api.delete(`tasks/${id}`);
-        this.tasks = this.tasks.filter(task => task.id !== id);
+        try {
+          await api.delete(`tasks/${id}`);
+          this.tasks = this.tasks.filter(task => task.id !== id);
+        } catch (error) {
+          this.showError(error);
+        }
       }
     },
     clearFields() {
@@ -151,19 +162,23 @@ export default {
     taskToForm: function(task) {
       this.taskRemember = task.remember_minutes_before;
       this.taskDescription = task.description;
-      this.taskDate = task.task_date;
-      this.taskTime = task.task_time;
+      this.taskDate = task.date;
+      this.taskTime = task.time;
       this.taskDuration = task.minutes_duration;
       this.taskId = task.id;
     },
     formToTask: function() {
       return {
         description: this.taskDescription,
-        task_date: this.taskDate,
-        task_time: this.taskTime,
+        date: this.taskDate,
+        time: this.taskTime,
         minutes_duration: this.taskDuration,
         remember_minutes_before: this.taskRemember,
       }
+    },
+    showError: function(objError) {
+      const message = objError.response?.data?.error || 'Erro ao gravar os dados.';
+      this.$toasted.error(message); 
     }
   },
   components: {
