@@ -9,12 +9,12 @@ class Task extends Model {
         time: Sequelize.DATE,
         minutes_duration: Sequelize.INTEGER,
         remember_minutes_before: Sequelize.INTEGER,
+        removed_at: Sequelize.DATE
       },
       {
         sequelize,
       }
     );
-
     return this;
   }
 }
