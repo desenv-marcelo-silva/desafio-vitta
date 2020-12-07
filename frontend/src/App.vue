@@ -2,104 +2,122 @@
   <div id="app">
     <Header />
 
-    <form
-      @submit.prevent="save">
+    <form @submit.prevent="save">
       <div class="task_name">
-        <label 
-          for="task_description">Tarefa</label>
-        <input 
-          id="task_description" 
-          type="text" 
-          v-model="taskDescription" />
+        <label for="task_description">Tarefa</label>
+        <input
+          id="task_description"
+          v-model="taskDescription"
+          type="text"
+        >
       </div>
-      
+
       <div class="task_info">
         <div>
           <label for="task_date">Data</label>
-          <input 
+          <input
             id="task_date"
+            v-model="taskDate"
             type="date"
-            v-model="taskDate" />
+          >
         </div>
 
         <div>
           <label for="task_time">Hora</label>
-          <input 
+          <input
             id="task_time"
+            v-model="taskTime"
             type="time"
             step="300"
-            v-model="taskTime" />
+          >
         </div>
 
-
         <div>
-        <label for="task_duration">Duração</label>
-          <input 
+          <label for="task_duration">Duração</label>
+          <input
             id="task_duration"
+            v-model="taskDuration"
             type="number"
             step="5"
             min="0"
-            v-model="taskDuration" />
+          >
         </div>
-       
+
         <div>
-        <label for="task_remember">Lembrar</label>
-        <input 
+          <label for="task_remember">Lembrar</label>
+          <input
             id="task_remember"
+            v-model="taskRemember"
             type="number"
             step="5"
             min="0"
-            v-model="taskRemember" />
+          >
         </div>
-     </div>
+      </div>
       <div>
-        <button type="submit">Salvar</button>
+        <button type="submit">
+          Salvar
+        </button>
       </div>
     </form>
 
-    <hr />
+    <hr>
     <div class="render_filter">
       <div class="render_filter__freq">
         <h4>Filtrar tarefas por frequência</h4>
 
         <select v-model="renderFilter">
-          <option value="day">Dia</option>
-          <option value="week">Semana</option>
-          <option value="month">Mês</option>
+          <option value="day">
+            Dia
+          </option>
+          <option value="week">
+            Semana
+          </option>
+          <option value="month">
+            Mês
+          </option>
         </select>
       </div>
       <div class="render_filter__status">
         <h4>Filtrar tarefas por status</h4>
 
         <select v-model="renderFilterStatus">
-          <option value="done">Realizadas</option>
-          <option value="open">Não realizadas</option>
-          <option value="all">Todas</option>
+          <option value="done">
+            Realizadas
+          </option>
+          <option value="open">
+            Não realizadas
+          </option>
+          <option value="all">
+            Todas
+          </option>
         </select>
       </div>
     </div>
 
-    <TaskList 
-      :tasks="tasks" 
+    <TaskList
+      :tasks="tasks"
       @deleteTask="deleteTask"
       @editTask="editTask"
-      />
+    />
   </div>
 </template>
 
 <script>
-import Header from './components/Header.vue';
-import TaskList from './components/TaskList.vue';
+import Header from "@/components/Header.vue";
+import TaskList from "@/components/TaskList.vue";
 
-import api from './services/service.js'
+import * as helpers from "@/helpers";
+
+import api from "@/services";
 
 const tasks = [];
 
 export default {
-  name: 'App',
-  created: async function() {
-    const res = await api.get('tasks');
-    this.tasks = res.data;
+  name: "App",
+  components: {
+    Header,
+    TaskList,
   },
   data() {
     return {
@@ -110,42 +128,44 @@ export default {
       taskDuration: 0,
       taskRemember: 0,
       taskId: 0,
-      renderFilter: 'week',
-      renderFilterStatus: 'all'
-    }
+      renderFilter: "week",
+      renderFilterStatus: "all",
+    };
+  },
+  created: async function () {
+    const res = await api.list();
+    this.tasks = res.data;
   },
   methods: {
-    save: async function() {
+    save: async function () {
       const _task = this.formToTask();
       if (this.taskId > 0) {
         _task.id = this.taskId;
-        _task.updated_at = new Date();
         try {
-          const UpdatedTask = await api.put(`tasks/${this.taskId}`, _task);
-          const tempTask = this.tasks.find(task => task.id === this.taskId);
+          const UpdatedTask = await api.update(this.taskId, _task);
+          const tempTask = this.tasks.find((task) => task.id === this.taskId);
           Object.assign(tempTask, UpdatedTask.data);
         } catch (error) {
-          this.showError(error);     
+          this.showError(error);
         }
       } else {
         try {
-          _task.created_at = new Date();
-          const newTask = await api.post('tasks', _task);
-          this.tasks.push(newTask.data);          
+          const newTask = await api.create(_task);
+          this.tasks.push(newTask.data);
         } catch (error) {
           this.showError(error);
         }
       }
       this.clearFields();
     },
-    editTask: function(task) {
+    editTask: function (task) {
       this.taskToForm(task);
     },
-    deleteTask: async function(id) {
-      if (window.confirm('Confirma?')) {
+    deleteTask: async function (id) {
+      if (window.confirm("Confirma?")) {
         try {
-          await api.delete(`tasks/${id}`);
-          this.tasks = this.tasks.filter(task => task.id !== id);
+          await api.delete(id);
+          this.tasks = this.tasks.filter((task) => task.id !== id);
         } catch (error) {
           this.showError(error);
         }
@@ -159,37 +179,33 @@ export default {
       this.taskDuration = 0;
       this.taskId = 0;
     },
-    taskToForm: function(task) {
+    taskToForm: function (task) {
       this.taskRemember = task.remember_minutes_before;
       this.taskDescription = task.description;
-      this.taskDate = task.date;
-      this.taskTime = task.time;
+      this.taskDate = helpers.isoToDate(task.date);
+      this.taskTime = helpers.isoToDate(task.time);
       this.taskDuration = task.minutes_duration;
       this.taskId = task.id;
     },
-    formToTask: function() {
+    formToTask: function () {
       return {
         description: this.taskDescription,
-        date: this.taskDate,
-        time: this.taskTime,
+        date: helpers.dateToIso(this.taskDate),
+        time: helpers.dateToIso(this.taskTime),
         minutes_duration: this.taskDuration,
         remember_minutes_before: this.taskRemember,
-      }
+      };
     },
-    showError: function(objError) {
-      const message = objError.response?.data?.error || 'Erro ao gravar os dados.';
-      this.$toasted.error(message); 
-    }
+    showError: function (objError) {
+      const message =
+        objError.response?.data?.error || "Erro ao gravar os dados.";
+      this.$toasted.error(message);
+    },
   },
-  components: {
-    Header,
-    TaskList
-  }
-}
+};
 </script>
 
 <style>
-
 body {
   margin: unset !important;
   max-width: unset !important;
@@ -222,7 +238,7 @@ div.task_info div {
   margin-right: 0.5rem;
 }
 
-div.task_info input[type='datetime-local'] {
+div.task_info input[type="datetime-local"] {
   height: 3.4rem;
   margin-right: 1rem;
 }
@@ -238,7 +254,7 @@ button {
 }
 
 button.btn_edit {
-  background-color: #00acFF;
+  background-color: #00acff;
   margin-right: 0.25rem;
 }
 
